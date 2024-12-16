@@ -12,7 +12,7 @@ const {
 const createApi = (callbackFun) => {
   api.use(bodyParser.json({ limit: "5mb" }));
   api.use(logger("dev"));
-  api.use(function (req, res, next) {
+  api.use(function(req, res, next) {
     res.header("Access-Control-Allow-Origin", "*");
     res.header(
       "Access-Control-Allow-Methods",
@@ -63,15 +63,17 @@ const createApi = (callbackFun) => {
   //endregion
   //region PUT /hr/api/v1/employees/:identity
   api.put("/hr/api/v1/employees/:identity", (req, res) => {
+    // employeeID added
+    const employeeId = req.params.identity;
     const employee = req.body;
-    updateEmployee(employee)
+    updateEmployee(employeeId, employee)
       .then((updatedEmployee) => {
         res.set("Content-Type", "application/json");
         res.status(200).send(updatedEmployee);
       })
       .catch((error) => {
         res.set("Content-Type", "application/json");
-        res.status(400).send({ error });
+        res.status(400).send({ error: error.message });
       });
   });
   //endregion
