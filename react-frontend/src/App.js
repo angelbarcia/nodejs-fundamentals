@@ -43,6 +43,37 @@ function App() {
     }
     setEmployee(newEmployee);
   };
+
+  const findEmployee = async () => {
+    const employeeId = document.getElementById("identity").value;
+    console.log(employeeId);
+    const url = `http://localhost:8100/hr/api/v1/employees/${employeeId}`;
+    try {
+      const response = await fetch(url, {
+        method: "GET",
+        headers: {
+          "Content-Type": "application/json",
+        },
+      });
+      const employeeData = await response.json();
+      console.log(employeeData);
+      if (employeeData) {
+        document.getElementById("fullname").value = employeeData.fullname || "";
+        document.getElementById("salary").value = employeeData.salary || "";
+        document.getElementById("department").value =
+          employeeData.department || "";
+        document.getElementById("birthYear").value =
+          employeeData.birthYear || "";
+        document.getElementById("email").value = employeeData.email || "";
+        document.getElementById("iban").value = employeeData.iban || "";
+      } else {
+        alert("we found no data for the employee");
+      }
+    } catch (error) {
+      console.error("Error fetching employee data:", error);
+      alert("Error fetching employee data");
+    }
+  };
   const retrieveEmployees = () => {
     fetch("http://localhost:8100/hr/api/v1/employees?pageNo=0&pageSize=25")
       .then((res) => res.json())
@@ -58,7 +89,6 @@ function App() {
 
   const hireEmployee = () => {
     console.log(employee);
-
     fetch("http://localhost:8100/hr/api/v1/employees", {
       method: "POST",
       headers: {
@@ -79,11 +109,9 @@ function App() {
 
   function deleteEmployee() {
     const employeeId = employee.identity;
-
     // Fixed the URL.
     // const url = `http://localhost:8100/api/v1/employees/${employeeId}`;
     const url = `http://localhost:8100/hr/api/v1/employees/${employeeId}`;
-
     fetch(url, {
       method: "DELETE",
       headers: {
@@ -104,6 +132,15 @@ function App() {
 
   function updateEmployee() {
     const employeeId = employee.identity;
+    employee.salary = parseFloat(employee.salary);
+    employee.birthYear = parseFloat(employee.birthYear);
+    console.log("Employee object:", employee);
+    console.log("Type of employee:", typeof employee);
+    console.log("Keys in employee:", Object.keys(employee));
+    if (!employeeId) {
+      alert("Employee ID is missing!");
+      return;
+    }
     const url = `http://localhost:8100/hr/api/v1/employees/${employeeId}`;
 
     fetch(url, {
@@ -140,11 +177,12 @@ function App() {
             onChange={handleChange}
             name={"identity"}
             placeholder={"Enter a valid employee ID"}
+            type={"text"}
           />
           <Button
             label={"Find"}
             color={"btn-success"}
-            onClick={() => alert("Clicked.")}
+            onClick={findEmployee}
           ></Button>
         </FormGroup>
         <FormGroup>
@@ -154,6 +192,7 @@ function App() {
             onChange={handleChange}
             name={"fullname"}
             placeholder={"Enter a valid full name"}
+            type={"text"}
           />
         </FormGroup>
         <FormGroup>
@@ -163,6 +202,7 @@ function App() {
             onChange={handleChange}
             name={"salary"}
             placeholder={"Enter a valid salary"}
+            type={"number"}
           />
         </FormGroup>
         <FormGroup>
@@ -172,6 +212,7 @@ function App() {
             onChange={handleChange}
             name={"iban"}
             placeholder={"Enter a valid IBAN"}
+            type={"text"}
           />
         </FormGroup>
         <FormGroup>
@@ -207,6 +248,7 @@ function App() {
             onChange={handleChange}
             name={"email"}
             placeholder={"Enter a valid e-mail"}
+            type={"text"}
           />
         </FormGroup>
         <FormGroup>
@@ -216,6 +258,7 @@ function App() {
             onChange={handleChange}
             name={"birthYear"}
             placeholder={"Enter a valid e-mail"}
+            type={"number"}
           />
         </FormGroup>
         <FormGroup>
