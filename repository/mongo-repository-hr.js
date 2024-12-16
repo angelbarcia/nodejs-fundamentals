@@ -26,7 +26,7 @@ const EmployeeSchema = new Schema({
   department: {
     type: String,
     required: true,
-    enum: ["IT", "Sales", "HR", "Finance"],
+    enum: ["IT", "SALES", "HR", "FINANCE"],
     default: "IT",
   },
   birthYear: {
@@ -78,11 +78,14 @@ const fireEmployee = (identity) => {
   return EmployeeModel.findOneAndDelete({ _id: identity }, {});
 };
 
-const updateEmployee = (employee) => {
-  return EmployeeModel.findOneAndUpdate(
-    { _id: employee._id },
-    { $set: employee }
-  );
+const updateEmployee = (updatedEmployee) => {
+  const { identity, ...updateFields } = updatedEmployee;
+  const filter = { _id: identity };
+  const updateDoc = {
+    $set: updateFields,
+  };
+  const options = { returnDocument: "after" };
+  return EmployeeModel.findOneAndUpdate(filter, updateDoc, options);
 };
 
 exports.EmployeeModel = EmployeeModel;
