@@ -79,10 +79,10 @@ const fireEmployee = (identity) => {
 };
 
 const updateEmployee = (updatedEmployee) => {
-  const { identity, ...updateFields } = updatedEmployee;
+  const { _id: identity, ...updatedFields } = updatedEmployee;
   const filter = { _id: identity };
   const updateDoc = {
-    $set: updateFields,
+    $set: updatedFields,
   };
   const options = { returnDocument: "after" };
   return EmployeeModel.findOneAndUpdate(filter, updateDoc, options);

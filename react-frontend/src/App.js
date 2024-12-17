@@ -88,6 +88,8 @@ function App() {
   };
 
   const hireEmployee = () => {
+    employee.salary = parseFloat(employee.salary);
+    employee.birthYear = parseFloat(employee.birthYear);
     console.log(employee);
     fetch("http://localhost:8100/hr/api/v1/employees", {
       method: "POST",
@@ -148,7 +150,6 @@ function App() {
       headers: {
         "Content-Type": "application/json",
       },
-      body: JSON.stringify(employee),
     })
       .then((response) => response.json())
       .then((data) => {
